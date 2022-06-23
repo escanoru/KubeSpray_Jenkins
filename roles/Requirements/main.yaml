@@ -1,9 +1,0 @@
----
-- hosts: all
-  remote_user: root
-  gather_facts: false
-  tasks:
-    - name: Running tasks/requirements.yaml instead of 'main'
-      import_role:
-        name: ../
-        tasks_from: requirements.yaml

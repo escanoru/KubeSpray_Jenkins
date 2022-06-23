@@ -62,7 +62,7 @@ pipeline {
         booleanParam(
             name: 'reset_k8s_cluster',
             defaultValue: true,
-            description: 'Uninstall previous installations K8s and set OS requirements, this will force a reboot whether K8s is installed or not'
+            description: 'Uninstall previous k8s installation, this will use the reset.yml playbook'
         )
         booleanParam(
             name: 'only_reset_k8s_cluster',
@@ -259,18 +259,6 @@ pipeline {
 			}
 		}
 
-        // stage('SSH Key Pair Tasks') {
-        //     steps {
-        //         ansiblePlaybook(
-        //             playbook: "${env.WORKSPACE}/roles/playbooks/ssh_keys_tasks.yaml",
-        //             inventory: "${env.WORKSPACE}/inventory.ini",
-        //             forks: 16,
-        //             colorized: true,
-        //             extras: '-u ${user} --ssh-extra-args="-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --flush-cache -v'
-        //         )
-        //     }
-        // }
-
         stage('Clonning KubeSpray project') {
             steps {
                 sh """
@@ -279,7 +267,7 @@ pipeline {
                 echo ${https_proxy}
                 git clone https://github.com/kubernetes-sigs/kubespray.git
                 cd kubespray
-                git checkout tags/v2.18.1
+                git checkout tags/v2.19.0
                 cp ${WORKSPACE}/roles/scripts/kubeSpray_venv_install_requirements.sh .
                 chmod +x kubeSpray_venv_install_requirements.sh
                 ./kubeSpray_venv_install_requirements.sh
@@ -321,32 +309,6 @@ pipeline {
                 
             }
         }
-
-        // stage('Running OS requirements K8s') {
-        //     when {
-        //         expression { params.run_requirements == true && params.only_reset_k8s_cluster == false }
-        //     }
-        //     steps {
-        //         ansiblePlaybook(
-        //             playbook: "${env.WORKSPACE}/roles/Requirements/main.yaml",
-        //             inventory: "${env.WORKSPACE}/inventory.ini",
-        //             forks: 16,
-        //             colorized: true,
-        //             extras: '-u ${user} --ssh-extra-args=" -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" --flush-cache -v',
-        //             extraVars: [
-        //                 jenkins_workspace: "${env.WORKSPACE}/",
-        //                 http_proxy: "${params.http_proxy}",
-        //                 https_proxy: "${params.https_proxy}",
-        //                 no_proxy: "${params.no_proxy}",
-        //                 use_external_load_balancer: "${params.use_external_load_balancer}",
-        //                 etcd_data_dir: "${params.etcd_data_dir}",
-        //                 docker_daemon_graph: "${params.docker_daemon_graph}",
-        //                 containerd_storage_dir: "${params.containerd_storage_dir}",
-        //                 kubespray_temp_dir: "${params.kubespray_temp_dir}"
-        //             ]
-        //         )
-        //     }
-        // }  
 
         stage('Setting KubeSpray Env') {
             when {
@@ -414,7 +376,7 @@ pipeline {
             }
             steps {         
                 // This is the recommended way of running ansible playbooks/roles from Jennkins
-                retry(2) {
+                retry(3) {
                     sh """
                     echo "Starting KubeSpray deployment"
                     cd ${WORKSPACE}/kubespray/

@@ -32,4 +32,3 @@
     - name: Printing pipenv_result output
       debug:
         msg: "{{ pipenv_result.stdout_lines }}"
-  # until pip3 -r requirements.txt ; sleep 5 ;  done && cp -rfp inventory/sample inventory/mycluster && sleep  120"

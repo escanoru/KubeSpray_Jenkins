@@ -1,9 +1,0 @@
----
-- name: Cleaning directories
-  ansible.builtin.shell: |
-    rm -rf /var/log/messages-* /opt/containerd /opt/cni /opt/kubespray /opt/mycluster /opt/kube* /tmp/* /root/.ansible /run/docker* /etc/docker* /etc/kuber* /var/lib/etcd /var/lib/dockershim/ /var/lib/container*/ /var/lib/docker* /usr/local/bin/kube* /usr/local/bin/calico* /usr/local/bin/container* /usr/local/bin/crict* /usr/local/bin/runc /usr/libexec/kuber* {{ docker_daemon_graph }} {{ containerd_storage_dir }} {{ kubespray_temp_dir }} {{ etcd_data_dir }} /etc/yum.repos.d/docker* 
-  ignore_errors: True
-  args:
-    warn: false
-  async: 900
-  poll: 10
