@@ -31,9 +31,6 @@ Jenkins pipeline to automate the installation of Kubernetes on CentOS by using t
 
 Make sure to distribute the Ansible host public keys to the K8s nodes.
 
-If metrics-server is enabled, once installed you can run the following command to get all the metrics-server options:
-sh `docker run --rm k8s.gcr.io/metrics-server/metrics-server:v0.4.2 --help`
-
 ```
 
 ```
